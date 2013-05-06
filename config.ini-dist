@@ -1,0 +1,15 @@
+[nagify]
+notificationsCgi = http://opsview-eu.vpn/cgi-bin/icinga/notifications.cgi
+username = nagios
+password = changeme
+filter_contact = eodabas
+filter_notification_command = notify-service-by-email
+
+[notification-systems]
+growlnotify_bin = /usr/local/bin/growlnotify
+notifysend_bin = /usr/bin/notify-send
+# growl or libnotify
+use = growl 
+
+[other]
+run_as_daemon = yes
