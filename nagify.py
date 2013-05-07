@@ -110,26 +110,26 @@ def notifySend(notifObj):
     print Exception, e
     return False
 
+def notifier(notifObj):
+  if use == "growl":
+    notifRes = growlNotify(notifObj)
+  elif use == "libnotify":
+    notifRes = notifySend(notifObj)
+  else:
+    print "Unkown notification system: " + use
+    sys.exit(1)
+  return notifRes
 
 def AppRun():
     try:
       dbconn.connectDb()
+      notifier({"information":"Ready to tell you your faults...\n...just like mom... yay!", "type":"OK", "service":"-", "host":"-", "time":"-"})
       while True:
         notifications = getJsonObj()
         if notifications != False:
           for notifObj in notifications:
-            if not dbconn.checkNotification(notifObj):
-
-              if use == "growl":
-                notifRes = growlNotify(notifObj)
-              elif use == "libnotify":
-                notifRes = notifySend(notifObj)
-              else:
-                print "Unkown notification system: " + use
-                sys.exit(1)
-
-              if notifRes:
-                dbconn.insertNotification(notifObj)
+            if not dbconn.checkNotification(notifObj) and notifier(notifObj):
+              dbconn.insertNotification(notifObj)
         time.sleep(10)
     except Exception, e:
       logging.exception("Error on application")
