@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import urllib2
 import base64
 import time
@@ -10,9 +11,14 @@ import os
 import re
 import ConfigParser
 import sys
+import logging
+
+basePath = os.path.dirname(os.path.realpath(__file__))
+logging.basicConfig(filename="%(basePath)s/_nagify.log" % locals(),
+                    level=logging.DEBUG,
+                    format="\n\n-------------------  [%(asctime)-15s]  ----------------------\n%(message)s")
 
 try:
-  basePath = os.path.dirname(os.path.realpath(__file__))
   config = ConfigParser.ConfigParser()
   config.read(basePath + "/config.ini")
   notificationsCgi = config.get('nagify', 'notificationsCgi')
@@ -24,8 +30,8 @@ try:
   use = config.get('notification-systems', 'use')
   run_as_daemon = config.get('other', "run_as_daemon")
 except Exception, e:
-  print "Error reading config.ini"
-  print e
+  logging.exception("Error reading config.ini")
+  print Exception, e
   sys.exit(1)
 
 filter_notification_command = "notify-service-by-email"
@@ -43,8 +49,8 @@ def getJsonObj():
     res = filter(lambda x: x["notification_command"] == filter_notification_command, res)
     return res
   except Exception, e:
-    print Exception
-    print e
+    logging.exception("Unable to get json object")
+    print Exception, e
     return False
 
 
@@ -72,8 +78,8 @@ def growlNotify(notifObj):
     subprocess.check_call(cmd, shell=True)
     return True
   except Exception, e:
-    print Exception
-    print e
+    logging.exception("Unable to send growlNotify")
+    print Exception, e
     return False
 
 def notifySend(notifObj):
@@ -100,8 +106,8 @@ def notifySend(notifObj):
     subprocess.check_call(cmd, shell=True)
     return True
   except Exception, e:
-    print Exception
-    print e
+    logging.exception("Unable to send notifySend")
+    print Exception, e
     return False
 
 
@@ -126,8 +132,8 @@ def AppRun():
                 dbconn.insertNotification(notifObj)
         time.sleep(10)
     except Exception, e:
-      print Exception
-      print e
+      logging.exception("Error on application")
+      print Exception, e
       sys.exit(1)
 
 
