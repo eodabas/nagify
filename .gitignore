@@ -2,3 +2,4 @@
 _*
 *.db
 config.ini
+.*.swp
