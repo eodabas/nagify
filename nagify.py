@@ -68,7 +68,7 @@ def growlNotify(notifObj):
   """
   try:
     myType = re.sub(r'.*\(([^\)]*)\)', r'\1', notifObj["type"])
-    cmd = "%s --image \"%s\" -n nagios -t \"%s\" -m \"%s\" -s" % (
+    cmd = "%s --image \"%s\" -n nagios -t \"%s\" -m \"%s\" " % (
     growlnotify_bin,
     basePath + "/images/" + myType + ".png",
     notifObj["information"],
