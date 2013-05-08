@@ -1,6 +1,11 @@
 import sqlite3
 import os
+import logging
 
+basePath = os.path.dirname(os.path.realpath(__file__))
+logging.basicConfig(filename="%(basePath)s/_nagify.log" % locals(),
+                    level=logging.DEBUG,
+                    format="\n\n-------------------  [%(asctime)-15s]  ----------------------\n%(message)s")
 
 def connectDb():
   try:
@@ -22,7 +27,8 @@ def connectDb():
     conn.commit()
     return conn
   except Exception, e:
-    print e
+    logging.exception("Error connecting db")
+    print Exception, e
     return False
  
 def insertNotification(notifObj):
@@ -37,7 +43,8 @@ def insertNotification(notifObj):
     conn.commit()
     return True
   except Exception, e:
-    print e
+    logging.exception("Error inserting notification")
+    print Exception, e
     return False
 
 def checkNotification(notifObj):
@@ -54,7 +61,8 @@ def checkNotification(notifObj):
     else:
       return False
   except Exception, e:
-    print e
+    logging.exception("Error checking notification")
+    print Exception, e
     return False
 
 
